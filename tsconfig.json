@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "declaration": false,
+    "outDir": "dist",
+    "strict": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowJs": true,
+    "target": "es2015",
+    "module": "es2015"
+  },
+  "include": [ "src/**/*" ],
+  "exclude": [ "node_modules", "dist" ]
+}

@@ -1,0 +1,57 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+.container {
+  display: grid;
+  grid-template-rows: 30% 70%;
+  height: 100vh;
+  width: 100vw;
+}
+
+.terrain {
+  width: 100%;
+  height: 100%;
+}
+
+.heightmaps {
+  display: flex;
+}
+
+.heightmaps button {
+  font-size: 5rem;
+  width: 200px;
+  height: 200px;
+  margin-bottom: 3rem;
+  background-color: white;
+  border: none;
+}
+
+.heightmaps button:hover {
+  background-color: #a1cea8;
+  cursor: pointer;
+}
+
+.heightmap {
+  display: grid;
+  width: 200px;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 1fr repeat(3, 1.5rem);
+}
+
+.heightmap canvas {
+  grid-column: span 3;
+  zoom: 2;
+}
+
+.heightmap span, .heightmap input {
+  padding: 0;
+  margin: 0;
+}
