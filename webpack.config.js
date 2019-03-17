@@ -8,14 +8,13 @@ module.exports = {
 
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'docs'),
   },
 
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
   },
 
-  mode: 'development',
   devtool: 'inline-source-map',
   devServer: {
     hot: true,
