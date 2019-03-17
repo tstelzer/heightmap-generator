@@ -3471,6 +3471,11 @@ locate-path@^3.0.0:
     p-locate "^3.0.0"
     path-exists "^3.0.0"
 
+lodash-es@^4.17.11:
+  version "4.17.11"
+  resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.11.tgz#145ab4a7ac5c5e52a3531fb4f310255a152b4be0"
+  integrity sha512-DHb1ub+rMjjrxqlB3H56/6MXtm1lSksDp2rA2cNWjG8mlDUYFhUj3Di2Zn5IwSU87xLv8tNIQ7sSwE/YOX/D/Q==
+
 lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.3:
   version "4.17.11"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
@@ -4565,12 +4570,13 @@ react-reconciler@^0.20.1:
     prop-types "^15.6.2"
     scheduler "^0.13.4"
 
-react-three-fiber@^1.3.6:
-  version "1.3.8"
-  resolved "https://registry.yarnpkg.com/react-three-fiber/-/react-three-fiber-1.3.8.tgz#4a2bdc0e219d428674e4f2d7a93f2847198780c1"
-  integrity sha512-W1ZyDSnhvsWcXspazb7rP7Z6ViD7bRk7pfaw9UmajeDnZg1/Vdfa99M9uwkqV0VouZxchma8+H2HhcOo1C4DjQ==
+react-three-fiber@^1.3.9:
+  version "1.3.9"
+  resolved "https://registry.yarnpkg.com/react-three-fiber/-/react-three-fiber-1.3.9.tgz#2bc6ba8f15215b07a15f7b2d47fc6d767e8e247c"
+  integrity sha512-fXO8Tw+jz2GvVe7sX39n4dNZEJggY9dc70NYz0ZTH29B+tIHJ/d0yIlHqQkVOMUStTxVo8ZgwxpeCbLqhDuO8Q==
   dependencies:
     "@babel/runtime" "^7.3.4"
+    lodash-es "^4.17.11"
     react-reconciler "^0.20.1"
     resize-observer-polyfill "^1.5.1"
     scheduler "^0.13.3"

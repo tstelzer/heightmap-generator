@@ -9,19 +9,18 @@ import './styles.css';
 const App = () => {
   const generateTerrain = state =>
     model.heightmap(
-      state.octaves.map(model.makeOctave),
-      1,
+      state.options,
       state.width,
       state.height,
       0.1,
     );
 
   const defaultState = {
-    octaves: [
-      model.octaveParams(3, 0.05, 0.05),
-      model.octaveParams(1, 0.1, 0.1),
-      model.octaveParams(1, 0.4, 0.4),
-      model.octaveParams(0.5, 1, 1),
+    options: [
+      model.heightmapOption(3, 0.05, 0.05, 1, 1),
+      model.heightmapOption(1, 0.1, 0.1, 1, 1),
+      model.heightmapOption(1, 0.4, 0.4, 1, 1),
+      model.heightmapOption(0.5, 1, 1, 1, 1),
     ],
     width: 100,
     height: 100,
@@ -32,18 +31,11 @@ const App = () => {
     terrain: generateTerrain(defaultState),
   });
 
-  const camera = {
-    fov: 90,
-    position: [state.width / 2, state.height / 4, 60],
-    near: 0.1,
-    far: 1000,
-  };
-
   const addOctave = () =>
     setState(state => {
       const newState = {
         ...state,
-        octaves: [...state.octaves, model.octaveParams(3, 0.05, 0.05)],
+        options: [...state.options, model.heightmapOption(3, 0.05, 0.05, 1, 1)],
       };
       return {...newState, terrain: generateTerrain(newState)};
     });
@@ -52,7 +44,7 @@ const App = () => {
     setState(state => {
       const newState = {
         ...state,
-        octaves: state.octaves.filter((_, index) => i !== index),
+        options: state.options.filter((_, index) => i !== index),
       };
       return {...newState, terrain: generateTerrain(newState)};
     });
@@ -61,10 +53,10 @@ const App = () => {
     setState(state => {
       const newState = {
         ...state,
-        octaves: R.adjust(
+        options: R.adjust(
           i,
-          octave => ({...octave, [prop]: value}),
-          state.octaves,
+          option => ({...option, [prop]: value}),
+          state.options,
         ),
       };
       return {...newState, terrain: generateTerrain(newState)};
@@ -81,7 +73,14 @@ const App = () => {
     <div className="container">
       <Heightmaps {...props} />
       <div className="terrain">
-        <Canvas camera={camera}>
+        <Canvas
+          camera={{
+            fov: 50,
+            position: [state.width / 2, state.height / 4, 60],
+            near: 0.1,
+            far: 1000,
+          }}
+        >
           <Terrain {...props} />
         </Canvas>
       </div>

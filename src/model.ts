@@ -4,11 +4,24 @@ import * as Three from 'three';
 
 const rng = zufall('VYIBVOS');
 
-type OctaveParams = {
+type HeightmapOption = {
   factor: number;
   freqX: number;
   freqY: number;
+  power: number;
+  t: number;
 };
+
+const makeOctave = ({factor, freqX, freqY}: HeightmapOption) => (
+  x: number,
+  y: number,
+  t: number,
+) => factor * rng.noise3D(freqX * x, freqY * y, t);
+
+const makeRedistribute = ({power}: HeightmapOption) =>
+  power === 1
+    ? R.identity
+    : (e: number) => (e > 0 ? Math.pow(e, power) : -Math.pow(-e, power));
 
 /**
  * Generates a heightmap by applying a list of noise functions in sequence.
@@ -17,15 +30,12 @@ type OctaveParams = {
  * [x => [y => [zSum, z1, z2, ..., zN]]]
  */
 export const heightmap = (
-  octaves: Array<(x: number, y: number, z: number) => number>,
-  power: number,
+  options: HeightmapOption[],
   width: number,
   height: number,
-  t: number,
 ) => {
   const result: number[][][] = [];
   const sum = R.reduce<number, number>(R.add, 0);
-  const redistribute = (e: number) => Math.pow(e, 2);
 
   for (let x = 0; x < width; x++) {
     if (!result[x]) {
@@ -33,25 +43,23 @@ export const heightmap = (
     }
 
     for (let y = 0; y < height; y++) {
-      const zs = octaves.reduce(
-        (xs: number[], f) => (xs.push(f(x, y, t)), xs),
-        [],
-      );
-      result[x][y] = [redistribute(sum(zs))].concat(zs);
+      const zs = options.reduce((xs: number[], option) => {
+        const octave = makeOctave(option);
+        const redistribute = makeRedistribute(option);
+        xs.push(redistribute(octave(x, y, option.t)));
+        return xs;
+      }, []);
+      result[x][y] = [sum(zs)].concat(zs);
     }
   }
 
   return result;
 };
 
-export const makeOctave = ({factor, freqX, freqY}: OctaveParams) => (
-  x: number,
-  y: number,
-  t: number,
-) => factor * rng.noise3D(freqX * x, freqY * y, t);
-
-export const octaveParams = (
+export const heightmapOption = (
   factor: number,
   freqX: number,
   freqY: number,
-): OctaveParams => ({factor, freqX, freqY});
+  power: number,
+  t: number,
+): HeightmapOption => ({factor, freqX, freqY, power, t});

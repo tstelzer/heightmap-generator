@@ -1,13 +1,14 @@
 import * as React from 'react';
+import * as PropTypes from 'prop-types';
 
-class Heightmap2 extends React.Component {
-  constructor() {
-    super();
-    this.canvas = React.createRef();
-  }
-  componentDidMount() {
-    const {width, height, terrain, index} = this.props;
-    const ctx = this.canvas.current.getContext('2d');
+const formatFloat = n => parseFloat(Math.round(n * 100) / 100).toFixed(2);
+
+const Canvas = props => {
+  const {width, height, terrain, index, ...rest} = props;
+  const canvas = React.useRef();
+
+  React.useEffect(() => {
+    const ctx = canvas.current.getContext('2d');
     let imageData = ctx.createImageData(width, height);
     for (let x = 0; x < width; x++) {
       for (let y = 0; y < height; y++) {
@@ -20,140 +21,132 @@ class Heightmap2 extends React.Component {
       }
     }
     ctx.putImageData(imageData, 0, 0);
-  }
-  componentDidUpdate() {
-    const {width, height, terrain, index} = this.props;
-    const ctx = this.canvas.current.getContext('2d');
-    let imageData = ctx.createImageData(width, height);
-    for (let x = 0; x < width; x++) {
-      for (let y = 0; y < height; y++) {
-        let i = (x + y * width) * 4;
-        let v = (terrain[x][y][index] + 1) * 128;
-        imageData.data[i] = v;
-        imageData.data[i + 1] = v;
-        imageData.data[i + 2] = v;
-        imageData.data[i + 3] = 255;
-      }
-    }
-    ctx.putImageData(imageData, 0, 0);
-  }
-  render() {
-    const {width, height} = this.props;
-    return (
-      <div className="heightmap">
-        <canvas height={height} width={width} ref={this.canvas} />
-        <span>sum heightmaps</span>
-      </div>
-    );
-  }
-}
+  });
 
-class Heightmap extends React.Component {
-  constructor() {
-    super();
-    this.canvas = React.createRef();
-  }
-  componentDidMount() {
-    const {width, height, terrain, index} = this.props;
-    const ctx = this.canvas.current.getContext('2d');
-    let imageData = ctx.createImageData(width, height);
-    for (let x = 0; x < width; x++) {
-      for (let y = 0; y < height; y++) {
-        let i = (x + y * width) * 4;
-        let v = (terrain[x][y][index + 1] + 1) * 128;
-        imageData.data[i] = v;
-        imageData.data[i + 1] = v;
-        imageData.data[i + 2] = v;
-        imageData.data[i + 3] = 255;
-      }
-    }
-    ctx.putImageData(imageData, 0, 0);
-  }
-  componentDidUpdate() {
-    const {width, height, terrain, index} = this.props;
-    const ctx = this.canvas.current.getContext('2d');
-    let imageData = ctx.createImageData(width, height);
-    for (let x = 0; x < width; x++) {
-      for (let y = 0; y < height; y++) {
-        let i = (x + y * width) * 4;
-        let v = (terrain[x][y][index + 1] + 1) * 128;
-        imageData.data[i] = v;
-        imageData.data[i + 1] = v;
-        imageData.data[i + 2] = v;
-        imageData.data[i + 3] = 255;
-      }
-    }
-    ctx.putImageData(imageData, 0, 0);
-  }
-  render() {
-    const {
-      width,
-      height,
-      removeOctave,
-      updateOctave,
-      index,
-      octaves,
-    } = this.props;
-    const octave = octaves[index];
-    return (
-      <div className="heightmap">
-        <canvas
-          onClick={() => removeOctave(index)}
-          height={height}
-          width={width}
-          ref={this.canvas}
-        />
+  return <canvas {...rest} height={props.height} width={props.width} ref={canvas} />;
+};
+
+const Heightmap = props => {
+  const {
+    width,
+    height,
+    removeOctave,
+    updateOctave,
+    index,
+    options,
+    terrain,
+  } = props;
+  const option = options[index];
+
+  return (
+    <div className="heightmap">
+      <Canvas
+        width={width}
+        height={height}
+        terrain={terrain}
+        onClick={() => removeOctave(index)}
+        index={index + 1}
+      />
+      <div className="heightmap-option">
         <span>factor</span>
         <input
           onChange={e =>
             updateOctave(index, 'factor', parseFloat(e.target.value))
           }
-          min="0"
+          min="0.05"
           max="3"
           step="0.05"
-          value={octave.factor}
+          value={option.factor}
           type="range"
         />
-        <span>{octave.factor}</span>
+        <span>{formatFloat(parseFloat(option.factor))}</span>
+      </div>
+      <div className="heightmap-option">
         <span>freqX</span>
         <input
           onChange={e =>
             updateOctave(index, 'freqX', parseFloat(e.target.value))
           }
-          min="0"
+          min="0.05"
           max="1"
           step="0.05"
           type="range"
-          value={octave.freqX}
+          value={option.freqX}
         />
-        <span>{octave.freqX}</span>
+        <span>{formatFloat(option.freqX)}</span>
+      </div>
+      <div className="heightmap-option">
         <span>freqY</span>
         <input
           onChange={e =>
             updateOctave(index, 'freqY', parseFloat(e.target.value))
           }
-          min="0"
+          min="0.05"
           max="1"
           step="0.05"
-          value={octave.freqY}
+          value={option.freqY}
           type="range"
         />
-        <span>{octave.freqY}</span>
+        <span>{formatFloat(option.freqY)}</span>
       </div>
-    );
-  }
-}
+      <div className="heightmap-option">
+        <span>power</span>
+        <input
+          onChange={e =>
+            updateOctave(index, 'power', parseFloat(e.target.value))
+          }
+          min="1"
+          max="6"
+          step="0.1"
+          value={option.power}
+          type="range"
+        />
+        <span>{formatFloat(option.power)}</span>
+      </div>
+      <div className="heightmap-option">
+        <span>t</span>
+        <input
+          onChange={e =>
+            updateOctave(index, 't', parseFloat(e.target.value))
+          }
+          min="0.01"
+          max="1"
+          step="0.01"
+          value={option.t}
+          type="range"
+        />
+        <span>{formatFloat(option.t)}</span>
+      </div>
+    </div>
+  );
+};
 
 export const Heightmaps = props => {
-  const heightmaps = props.octaves.map((_, i) => (
+  const heightmaps = props.options.map((_, i) => (
     <Heightmap key={i} {...props} index={i} />
   ));
+  const {
+    width,
+    height,
+    removeOctave,
+    updateOctave,
+    index,
+    options,
+    terrain,
+  } = props;
+
+  const canvasProps = {width, height, terrain};
 
   return (
     <div className="heightmaps">
       {heightmaps}
-      <button onClick={props.addOctave}>+</button>
-      <Heightmap2 {...props} index={0} />
+      <button className="add-heightmap" onClick={props.addOctave}>
+        +
+      </button>
+      <div className="heightmap">
+        <Canvas {...canvasProps} index={0} />
+        <div className="heightmap-sum-info">sum of all heightmaps</div>
+      </div>
     </div>
   );
 };
