@@ -6,8 +6,9 @@
   "author": "Timm Stelzer <timmstelzer@gmail.com>",
   "scripts": {
     "type-check": "tsc --noEmit",
-    "build": "webpack --progress --colors --mode=production",
-    "start": "webpack-dev-server --progress --colors --mode=development"
+    "build": "webpack --config webpack.production.js",
+    "analyze": "webpack --config webpack.analyze.js",
+    "start": "webpack-dev-server --config webpack.development.js"
   },
   "license": "MIT",
   "devDependencies": {
@@ -23,6 +24,7 @@
     "@types/react-dom": "^16.8.2",
     "@types/seedrandom": "^2.4.27",
     "babel-loader": "^8.0.5",
+    "clean-webpack-plugin": "^2.0.1",
     "css-loader": "^2.1.1",
     "eslint": "^5.15.1",
     "eslint-config-prettier": "^4.1.0",
@@ -38,6 +40,7 @@
     "tslint-plugin-prettier": "^2.0.1",
     "typescript": "^3.3.3333",
     "webpack": "^4.29.6",
+    "webpack-bundle-analyzer": "^3.1.0",
     "webpack-cli": "^3.2.3",
     "webpack-dev-server": "^3.2.1"
   },
